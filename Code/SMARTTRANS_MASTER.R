@@ -4,6 +4,8 @@
 if(Sys.info()[["user"]] == "WB521633") project_file_path <- "C:/Users/wb521633/Dropbox/World Bank/IEs/CrashMap-Nairobi"
 if(Sys.info()[["user"]] == "robmarty") project_file_path <- "~/Dropbox/World Bank/IEs/CrashMap-Nairobi"
 
+if(Sys.info()[["user"]] == "meyhar") project_file_path <- "~/Dropbox/DIME_Meyhar/Kenya/roadcrash-survey"
+
 rawdata_file_path <- file.path(project_file_path, "Data", "RawData")
 finaldata_file_path <- file.path(project_file_path, "Data", "FinalData")
 
