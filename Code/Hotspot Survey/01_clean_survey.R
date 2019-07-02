@@ -3,7 +3,9 @@
 # 1. At end, account for logic. If say no intersection, make everything intersection related false
 
 # Load Data --------------------------------------------------------------------
-survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v2_WIDE.csv"))
+survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v3_WIDE.csv"))
+
+survey <- survey[grepl("Jul 2, 2019", survey$SubmissionDate),]
 
 # Stack Segments ---------------------------------------------------------------
 common_vars <- which(!grepl("_[[:digit:]]$", names(survey)))

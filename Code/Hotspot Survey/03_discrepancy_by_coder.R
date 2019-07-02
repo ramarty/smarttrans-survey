@@ -61,55 +61,54 @@ for(uid in unique(survey_results_all$uid)){
   survey_results_all_i <- survey_results_all[survey_results_all$uid %in% uid,]
   survey_results_all_i <- survey_results_all_i[survey_results_all_i$same_answer %in% FALSE,]
   
-  supervisor_1 <- survey_results_all_i$supervisor_1[1] %>% tolower() %>% str_replace_all(" ","_")
-  supervisor_2 <- survey_results_all_i$supervisor_2[1] %>% tolower() %>% str_replace_all(" ","_")
+  # Only look at results if there are some differences
+  if(nrow(survey_results_all_i) > 0){
   
-  survey_results_all_i$Q <- 1:nrow(survey_results_all_i)
+    supervisor_1 <- survey_results_all_i$supervisor_1[1] %>% tolower() %>% str_replace_all(" ","_")
+    supervisor_2 <- survey_results_all_i$supervisor_2[1] %>% tolower() %>% str_replace_all(" ","_")
+    
+    survey_results_all_i$Q <- 1:nrow(survey_results_all_i)
+    
+    survey_results_all_i <- survey_results_all_i[,c("Q", "label", "response_1", "response_2", "supervisor_1", "supervisor_2")]
+    
+    names(survey_results_all_i)[names(survey_results_all_i) == "response_1"] <- supervisor_1
+    names(survey_results_all_i)[names(survey_results_all_i) == "response_2"] <- supervisor_2
+    
+    survey_results_all_i <- survey_results_all_i %>% dplyr::select(-c(supervisor_1,supervisor_2))
+    
+    #### Export CSV
+    survey_results_all_i_forcsv <- survey_results_all_i
+    survey_results_all_i_forcsv$new_answer <- ""
+    survey_results_all_i_forcsv$notes <- ""
+    survey_results_all_i_forcsv$Q <- NULL
   
-  survey_results_all_i <- survey_results_all_i[,c("Q", "label", "response_1", "response_2", "supervisor_1", "supervisor_2")]
-  
-  names(survey_results_all_i)[names(survey_results_all_i) == "response_1"] <- supervisor_1
-  names(survey_results_all_i)[names(survey_results_all_i) == "response_2"] <- supervisor_2
-  
-  survey_results_all_i <- survey_results_all_i %>% dplyr::select(-c(supervisor_1,supervisor_2))
-  
-  #### Export CSV
-  survey_results_all_i_forcsv <- survey_results_all_i
-  survey_results_all_i_forcsv$new_answer <- ""
-  survey_results_all_i_forcsv$notes <- ""
-  survey_results_all_i_forcsv$Q <- NULL
-
-  write.csv(survey_results_all_i_forcsv, file.path(finaldata_file_path, "Hotspot Survey", "Individual Discrepencies", "CSV", paste0(uid, ".csv")), row.names=F)
-  
-  #### Export Table
-  
-  ## Prep Table
-  t1 <- tableGrob(survey_results_all_i)
-  title <- textGrob(uid,gp=gpar(fontsize=50))
-  padding <- unit(5,"mm")
-  
-  table <- gtable_add_rows(
-    t1, 
-    heights = grobHeight(title) + padding,
-    pos = 0)
-  table <- gtable_add_grob(
-    table, 
-    title, 
-    1, 1, 1, ncol(table))
-  
-  ## Export
-  pdf(file.path(finaldata_file_path, "Hotspot Survey", "Individual Discrepencies", "PDF", paste0(uid, ".pdf")), 
-      height=11, width=16)
-  grid.draw(table)
-  dev.off()
+    write.csv(survey_results_all_i_forcsv, file.path(finaldata_file_path, "Hotspot Survey", "Individual Discrepencies", "CSV", paste0(uid, ".csv")), row.names=F)
+    
+    #### Export Table
+    
+    ## Prep Table
+    t1 <- tableGrob(survey_results_all_i)
+    title <- textGrob(uid,gp=gpar(fontsize=50))
+    padding <- unit(5,"mm")
+    
+    table <- gtable_add_rows(
+      t1, 
+      heights = grobHeight(title) + padding,
+      pos = 0)
+    table <- gtable_add_grob(
+      table, 
+      title, 
+      1, 1, 1, ncol(table))
+    
+    ## Export
+    pdf(file.path(finaldata_file_path, "Hotspot Survey", "Individual Discrepencies", "PDF", paste0(uid, ".pdf")), 
+        height=11, width=16)
+    grid.draw(table)
+    dev.off()
+  }
   
 }
 
-8 Purity Kimuru Pheliciah
-5 Salome Rodgers kegode
-6 Andrew Muriithi Salome
-11 Pheliciah Andrew Muriithi
-9 Rodgers kegode Purity Kimuru
 
 
 
