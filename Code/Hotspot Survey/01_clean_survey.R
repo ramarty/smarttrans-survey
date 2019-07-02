@@ -5,8 +5,6 @@
 # Load Data --------------------------------------------------------------------
 survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v3_WIDE.csv"))
 
-survey <- survey[grepl("Jul 2, 2019", survey$SubmissionDate),]
-
 # Stack Segments ---------------------------------------------------------------
 common_vars <- which(!grepl("_[[:digit:]]$", names(survey)))
 segment_ids <- names(survey)[grepl("roadnum", names(survey))] %>% str_replace_all("[[:alpha:]]|[[:punct:]]", "") %>% as.numeric
