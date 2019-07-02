@@ -105,12 +105,5 @@ for(uid in unique(survey_results_all$uid)){
   
 }
 
-8 Purity Kimuru Pheliciah
-5 Salome Rodgers kegode
-6 Andrew Muriithi Salome
-11 Pheliciah Andrew Muriithi
-9 Rodgers kegode Purity Kimuru
-
-
 
 

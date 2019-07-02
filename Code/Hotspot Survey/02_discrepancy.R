@@ -2,6 +2,10 @@
 
 # Load Data --------------------------------------------------------------------
 survey <- readRDS(file.path(finaldata_file_path, "Hotspot Survey", "hotspot_survey.Rds"))
+
+#keep July 2 date only
+survey <- survey[grepl("Jul 2, 2019", survey$SubmissionDate),]
+
 survey$uid <- paste0(survey$road_id,"_",survey$segment_id)
 
 uid_freq <- survey$uid %>% 
@@ -24,6 +28,7 @@ survey_results_all$id <- 1
 
 collapse_formula <- as.formula(paste(paste(vars, collapse = " + "), " ~ id"))
 
+
 survey_results <- summaryBy(collapse_formula, data=survey_results_all, FUN=mean, keep.names=T)
 survey_results <- survey_results %>% dplyr::select(-c(id, SubmissionDate, starttime,
                                                       endtime, deviceid, subscriberid, 
@@ -43,6 +48,7 @@ survey_results$variable <- row.names(survey_results)
 row.names(survey_results) <- 1:nrow(survey_results)
 
 survey_results <- survey_results[!grepl("comment|picture|Latitude|Longitude|Altitude|Accuracy|flow", survey_results$variable),]
+
 survey_results$variable <- survey_results$variable %>% str_replace_all("_[[:digit:]]$","")
 
 # Add in Full Variable Names ---------------------------------------------------
