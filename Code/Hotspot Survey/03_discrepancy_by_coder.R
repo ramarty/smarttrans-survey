@@ -4,6 +4,8 @@
 survey <- readRDS(file.path(finaldata_file_path, "Hotspot Survey", "hotspot_survey.Rds"))
 survey$uid <- paste0(survey$road_id,"_",survey$segment_id)
 
+survey <- survey[grepl("Jul 2, 2019", survey$SubmissionDate),]
+
 uid_freq <- survey$uid %>% 
   table %>% 
   as.data.frame %>%
