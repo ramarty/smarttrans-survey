@@ -3,7 +3,7 @@
 # 1. At end, account for logic. If say no intersection, make everything intersection related false
 
 # Load Data --------------------------------------------------------------------
-survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v3_WIDE.csv"))
+survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v5_WIDE.csv"))
 
 # Stack Segments ---------------------------------------------------------------
 common_vars <- which(!grepl("_[[:digit:]]$", names(survey)))
@@ -33,8 +33,8 @@ survey_stacked <- lapply(segment_ids, function(seg_id_i){
 # Apply Labels -----------------------------------------------------------------
 survey_stacked_nolabels <- survey_stacked
 
-survey_choices <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-06-25.xlsx"), 1) %>% dplyr::select(type, name)
-survey_form <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-06-25.xlsx"), 2)
+survey_choices <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-07-02.xlsx"), 1) %>% dplyr::select(type, name)
+survey_form <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-07-02.xlsx"), 2)
 
 survey_choices <- survey_choices[grepl("select_one", survey_choices$type),]
 survey_choices$type <- survey_choices$type %>% str_replace_all("select_one ", "")

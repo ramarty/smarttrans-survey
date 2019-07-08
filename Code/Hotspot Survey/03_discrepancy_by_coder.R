@@ -4,7 +4,7 @@
 survey <- readRDS(file.path(finaldata_file_path, "Hotspot Survey", "hotspot_survey.Rds"))
 survey$uid <- paste0(survey$road_id,"_",survey$segment_id)
 
-survey <- survey[grepl("Jul 2, 2019", survey$SubmissionDate),]
+survey <- survey[grepl("Jul 3, 2019", survey$SubmissionDate),]
 
 uid_freq <- survey$uid %>% 
   table %>% 
@@ -35,7 +35,7 @@ survey_results_all$road_id <- survey_results_all$uid %>% str_replace_all("_[[:di
 survey_results_all$variable_clean <- survey_results_all$variable %>% str_replace_all("_[[:digit:]]", "")
 
 # Add in Full Variable Names ---------------------------------------------------
-survey_var_names <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-06-25.xlsx"), 1) %>% dplyr::select(name, label)
+survey_var_names <- read_excel(file.path(project_file_path, "Hotspot Survey", "Survey Form", "iRAP-surveyform-2019-07-02.xlsx"), 1) %>% dplyr::select(name, label)
 survey_var_names <- survey_var_names[!is.na(survey_var_names$label),]
 
 survey_results_all <- merge(survey_results_all, survey_var_names, by.x="variable_clean", by.y="name", all.x=T, all.y=F)
