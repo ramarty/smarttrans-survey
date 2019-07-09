@@ -57,8 +57,52 @@ long_to_wide <- function(id, df, constant_vars){
 vehicle_counts_df <- lapply(unique(vehicle_counts$id), long_to_wide, vehicle_counts, video_constant_vars) %>% bind_rows
 pedestrian_counts_df <- lapply(unique(pedestrian_counts$id), long_to_wide, pedestrian_counts, pedestrian_constant_vars) %>% bind_rows
 
-# Clean Values -----------------------------------------------------------------
+counts_df <- bind_rows(vehicle_counts_df, pedestrian_counts_df)
 
-# Export -----------------------------------------------------------------------
-vehicle_counts_df$value_1
+# Clean Values -----------------------------------------------------------------
+# Video Duration
+counts_df$value_1[vehicle_counts_df$question == "video_duration_minutes_and_seconds"] <- 
+  counts_df$value_1[vehicle_counts_df$question == "video_duration_minutes_and_seconds"] %>%
+    lapply(function(str){
+      time_m_s <- str %>% strsplit(":") %>% unlist %>% as.numeric
+      time_m <- time_m_s[1] + time_m_s[2]/60
+      return(time_m)
+    }) %>% unlist
+
+counts_df$value_2[vehicle_counts_df$question == "video_duration_minutes_and_seconds"] <- 
+  counts_df$value_2[vehicle_counts_df$question == "video_duration_minutes_and_seconds"] %>%
+  lapply(function(str){
+    time_m_s <- str %>% strsplit(":") %>% unlist %>% as.numeric
+    time_m <- time_m_s[1] + time_m_s[2]/60
+    return(time_m)
+  }) %>% unlist
+
+# Video Time of Day
+counts_df$value_1[vehicle_counts_df$question == "video_time_of_day"] <- 
+  counts_df$value_1[vehicle_counts_df$question == "video_time_of_day"] %>%
+  lapply(function(str){
+    time_m_s <- str %>% strsplit(":") %>% unlist %>% as.numeric
+    time_m <- time_m_s[1] + time_m_s[2]/60
+    return(time_m)
+  }) %>% unlist
+
+counts_df$value_2[vehicle_counts_df$question == "video_time_of_day"] <- 
+  counts_df$value_2[vehicle_counts_df$question == "video_time_of_day"] %>%
+  lapply(function(str){
+    time_m_s <- str %>% strsplit(":") %>% unlist %>% as.numeric
+    time_m <- time_m_s[1] + time_m_s[2]/60
+    return(time_m)
+  }) %>% unlist
+
+# Check Discrepencies ----------------------------------------------------------
+counts_df$value_1 <- as.numeric(counts_df$value_1)
+counts_df$value_2 <- as.numeric(counts_df$value_2)
+
+counts_df$value_1[is.na(counts_df$value_1)] <- 0
+counts_df$value_2[is.na(counts_df$value_2)] <- 0
+
+counts_df <- counts_df[!(counts_df$question %in% c("video_duration_minutes_and_seconds", "video_time_of_day")),]
+counts_df$difference <- abs(counts_df$value_1 - counts_df$value_2)
+
+
 
