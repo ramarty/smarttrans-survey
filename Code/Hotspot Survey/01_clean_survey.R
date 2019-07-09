@@ -3,7 +3,7 @@
 # 1. At end, account for logic. If say no intersection, make everything intersection related false
 
 # Load Data --------------------------------------------------------------------
-survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v3_WIDE.csv"))
+survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v5_WIDE.csv"))
 
 # Stack Segments ---------------------------------------------------------------
 common_vars <- which(!grepl("_[[:digit:]]$", names(survey)))
@@ -69,6 +69,11 @@ for(var in repeat_group_vars){
 
   }
 }
+
+# Deal with Road Severity ------------------------------------------------------
+grepl("object")
+names(survey_stacked)
+
 
 # Account for Survey Logic -----------------------------------------------------
 survey_stacked$inter_channel[survey_stacked$inter_type == "None"] <- NA
