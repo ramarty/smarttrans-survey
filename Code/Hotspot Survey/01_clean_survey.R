@@ -3,7 +3,12 @@
 # 1. At end, account for logic. If say no intersection, make everything intersection related false
 
 # Load Data --------------------------------------------------------------------
-survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v5_WIDE.csv"))
+survey <- read.csv(file.path(rawdata_file_path, "Hotspot Survey", "road_coding_v5_20190711.csv"))
+
+# Deal with Severity Objects ---------------------------------------------------
+object_vars <- names(survey)[grepl("object", names(survey))]
+object_vars <- object_vars[grepl("_[[:digit:]]_|_[[:digit:]][[:digit:]]_", object_vars)]
+survey <- survey[,!(names(survey) %in% object_vars)]
 
 # Stack Segments ---------------------------------------------------------------
 common_vars <- which(!grepl("_[[:digit:]]$", names(survey)))
@@ -26,7 +31,11 @@ survey_stacked <- lapply(segment_ids, function(seg_id_i){
   names(survey_s)[grepl(repeat_group_vars_coll, names(survey_s))] <- names(survey_s)[grepl(repeat_group_vars_coll, names(survey_s))] %>% str_replace_all("_[[:digit:]]_", "_")
   
   survey_s$segment_id <- seg_id_i
-
+  
+  for(var in names(survey_s)[grepl("object", names(survey_s))]){
+    survey_s[[var]] <- survey_s[[var]] %>% as.character
+  }
+  
   return(survey_s)
 }) %>% bind_rows
 
@@ -70,10 +79,25 @@ for(var in repeat_group_vars){
   }
 }
 
-# Deal with Road Severity ------------------------------------------------------
-grepl("object")
-names(survey_stacked)
+# Replace Road Severity Labels with IDs ----------------------------------------
+survey_form_objs <- survey_form[survey_form$list_name %in% "roadside_passobj",]
+object_vars <- names(survey_stacked)[grepl("object", names(survey_stacked))]
 
+for(var in object_vars){
+  
+  for(i in 1:nrow(survey_form_objs)){
+    survey_form_objs_i <- survey_form_objs[i,]
+    
+    id <- paste0("\\b", survey_form_objs_i$name, "\\b")
+    label <- survey_form_objs_i$label
+    
+    survey_stacked[[var]] <- survey_stacked[[var]] %>% str_replace_all(id, label)
+
+  }
+}
+
+#grepl("object")
+#names(survey_stacked)
 
 # Account for Survey Logic -----------------------------------------------------
 survey_stacked$inter_channel[survey_stacked$inter_type == "None"] <- NA
@@ -86,4 +110,16 @@ saveRDS(survey_stacked, file.path(finaldata_file_path, "Hotspot Survey", "hotspo
 
 names(survey_stacked) <- names(survey_stacked) %>% str_replace_all("\\.","_")
 write_dta(survey_stacked, file.path(finaldata_file_path, "Hotspot Survey", "hotspot_survey.dta"))
+saveRDS(survey_stacked, file.path(finaldata_file_path, "Hotspot Survey", "hotspot_survey.Rds"))
+
+
+
+
+survey_stacked_i <- survey_stacked[survey_stacked$road_id == 22 & survey_stacked$segment_id == 5,]
+survey_stacked_i <- survey_stacked_i[survey_stacked_i$enum_name == "Salome",]
+
+survey_stacked_i %>% t
+
+
+
 
